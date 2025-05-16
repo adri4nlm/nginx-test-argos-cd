@@ -1,0 +1,28 @@
+apiVersion: argoproj.io/v1alpha1
+kind: ApplicationSet
+metadata:
+  name: nginx-multicluster
+  namespace: argocd
+spec:
+  generators:
+    - clusters: {}
+  template:
+    metadata:
+      name: '{{name}}-nginx'
+    spec:
+      project: default
+      source:
+        repoURL: https://github.com/adri4nlm/nginx-test-argos-cd.git
+        targetRevision: HEAD
+        path: nginx
+        kustomize: {}
+      destination:
+        server: '{{server}}'
+        namespace: default
+      syncPolicy:
+        automated:
+          selfHeal: true
+          prune: true
+        syncOptions:
+          - CreateNamespace=true
+
